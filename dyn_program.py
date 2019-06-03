@@ -28,22 +28,25 @@ class Items:
         return " <%s> %u %u" % (self._name, self._value, self._weight)
 
 
+def items_2_str(items):
+    res_ = ""
+    for itm in items:
+        res_ += "%s" % itm
+        res_ += " "
+    return res_
+
+
 def maximize_val(item_list, avail):
-    items_str = ""
-    for itm in item_list:
-        items_str += "%s" % itm
-        items_str += " "
-    print("MAX => %s with %u" % (items_str, avail))
+    print("MAX => %s  < %u" % (items_2_str(item_list), avail))
     if not item_list or not avail:
         return 0, []
     itm = item_list.pop(0)
-    print("check %s" % itm)
     if itm.weight > avail:
         return maximize_val(list(item_list), avail)
     else:
         with_val, with_items = maximize_val(list(item_list), avail - itm.weight)
         without_val, without_items = maximize_val(list(item_list), avail)
-
+        print("%s vs %s" % (items_2_str(with_items), items_2_str(without_items)))
         if with_val + itm.value > without_val:
             return with_val + itm.value, item_list + [itm]
         else:
