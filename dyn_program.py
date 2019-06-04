@@ -37,23 +37,19 @@ def items_2_str(items):
 
 
 def maximize_val(item_list, avail):
-    print("MAX => %s  < %u" % (items_2_str(item_list), avail))
     if not item_list or not avail:
-        print("chose ==> nothing")
+        print("END")
         return 0, []
     itm = item_list.pop(0)
-    print("%s | %s" %(itm, items_2_str(item_list)))
+    print("%s | %s < %u" % (itm, items_2_str(item_list), avail))
     if itm.weight > avail:
         return maximize_val(list(item_list), avail)
     else:
         with_val, with_items = maximize_val(list(item_list), avail - itm.weight)
         without_val, without_items = maximize_val(list(item_list), avail)
-        print("%s:(%u) vs %s:(%u)" % (items_2_str(with_items), with_val, items_2_str(without_items), without_val))
         if with_val + itm.value > without_val:
-            print("with ==> %s + %s" % (items_2_str([itm]), items_2_str(item_list)))
-            return with_val + itm.value, [itm] + item_list
+            return with_val + itm.value, [itm] + with_items
         else:
-            print("without ==> %s" % items_2_str(without_items))
             return without_val, list(without_items)
 
 
@@ -62,11 +58,11 @@ def small_testing():
     values = [6, 7, 8, 9]
     weights = [3, 3, 2, 5]
     items = [Items(n, v, w) for n, v, w in zip(names, values, weights)]
+    print("(init) maximize_val => %s < %u" % (items_2_str(items), 5))
     val, token = maximize_val(items, 5)
     print("MAX VAL:", val)
-    for itm in token:
-        print("%s: value[%u] weight[%u]" % (itm.name, itm.value, itm.weight))
-
+    print("TOKEN:", items_2_str(token))
+    
 
 if __name__ == '__main__':
     small_testing()
