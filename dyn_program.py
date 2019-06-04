@@ -59,6 +59,31 @@ def maximize_val(item_list, avail):
             return without_val, list(without_items)
 
 
+def fast_maximize_val(item_list, avail, memo={}):
+    try:
+        return memo[(len(item_list), avail)]
+    except KeyError:
+        pass
+    
+    if not item_list or not avail:
+        ret_val, ret_list = 0, []
+    else:
+        itm = item_list.pop(0)
+        
+        if itm.weight > avail:
+            ret_val, ret_list = fast_maximize_val(list(item_list), avail)
+        else:
+            with_val, with_list = fast_maximize_val(list(item_list), avail - itm.weight)
+            without_val, without_list = fast_maximize_val(list(item_list), avail)
+            if with_val + itm.weight > without_val:
+                ret_val, ret_list = itm.value + with_val, [itm] + with_list
+            else:
+                ret_val, ret_list = without_val, list(without_list)
+    
+    memo[(len(ret_list), avail)] = (ret_val, ret_list)
+    return ret_val, ret_list
+    
+    
 def build_items(itm_cnt):
     return [Item(str(i), random.randint(1, EACH_VALUE_MAX), random.randint(1, EACH_WEIGHT_MAX)) for i in range(itm_cnt)]
 
@@ -75,7 +100,7 @@ def small_testing():
 
 
 def big_testing():
-    val, token = maximize_val(build_items(TEST_ITEMS_CNT), MAX_WEIGHT)
+    val, token = fast_maximize_val(build_items(TEST_ITEMS_CNT), MAX_WEIGHT)
     print("MAX VAL:", val)
     print("TOKEN:", items_2_str(token))
 
