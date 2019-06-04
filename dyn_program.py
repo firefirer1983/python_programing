@@ -1,7 +1,13 @@
-MAX_WEIGHT = 5
+import random
+TEST_ITEMS_CNT = 40
+
+EACH_WEIGHT_MAX = 1000
+EACH_VALUE_MAX = 1000
+MAX_WEIGHT = EACH_WEIGHT_MAX*TEST_ITEMS_CNT
+MAX_VALUE = EACH_VALUE_MAX*TEST_ITEMS_CNT
 
 
-class Items:
+class Item:
 
     def __init__(self, name, value, weight):
         self._name = name
@@ -53,16 +59,26 @@ def maximize_val(item_list, avail):
             return without_val, list(without_items)
 
 
+def build_items(itm_cnt):
+    return [Item(str(i), random.randint(1, EACH_VALUE_MAX), random.randint(1, EACH_WEIGHT_MAX)) for i in range(itm_cnt)]
+
+
 def small_testing():
     names = ['a', 'b', 'c', 'd']
     values = [6, 7, 8, 9]
     weights = [3, 3, 2, 5]
-    items = [Items(n, v, w) for n, v, w in zip(names, values, weights)]
-    print("(init) maximize_val => %s < %u" % (items_2_str(items), 5))
+    items = [Item(n, v, w) for n, v, w in zip(names, values, weights)]
+    print("         | %s < %u" % (items_2_str(items), 5))
     val, token = maximize_val(items, 5)
     print("MAX VAL:", val)
     print("TOKEN:", items_2_str(token))
-    
+
+
+def big_testing():
+    val, token = maximize_val(build_items(TEST_ITEMS_CNT), MAX_WEIGHT)
+    print("MAX VAL:", val)
+    print("TOKEN:", items_2_str(token))
+
 
 if __name__ == '__main__':
-    small_testing()
+    big_testing()
